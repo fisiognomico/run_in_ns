@@ -165,8 +165,9 @@ fn split_namespace(ns_name: &String) -> Result<(), ()> {
 fn set_lo_up() -> Result<(), Error> {
     tokio::runtime::Runtime::new().unwrap().handle().block_on( async {
         let (connection, handle, _) = new_connection().unwrap();
+        tokio::spawn(connection);
         log::debug!("ARE WE STOPPING YET???");
-        let veth_idx = handle.link().get().match_name("test".to_string()).execute().try_next().await.unwrap()
+        let veth_idx = handle.link().get().match_name("lo".to_string()).execute().try_next().await.unwrap()
                     .ok_or_else(|| log::error!("Can not find lo interface ")).unwrap()
                     .header.index;
         log::debug!("LO INTERFACE INDEX: {}", veth_idx);
